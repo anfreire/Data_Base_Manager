@@ -69,7 +69,7 @@ class Confirm_Email(Widget):
             dialog.critical(None, "Error", "Email does not match the one registered!", QMessageBox.Ok)
             return
         elif receiver_email == self.data.email:
-            send_email(self.data, "tmpmailanfreire@gmail.com", "cfmywsuyfnvirxaq")
+            send_email(self.data, "insert_email_here", "inset_password_here")
             self.recover_events_2()
 
     def recover_events_2(self) -> None:

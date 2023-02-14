@@ -1,4 +1,4 @@
-# Data Base Manager 0.2
+# Data Base Manager 0.1
 
 Data Base Manager is an open-source project aimed at making database management accessible and easy for everyone. With the constantly evolving demands of data management, traditional tools such as excel are no longer sufficient. This is why Data Base Manager was created.
 

@@ -1,10 +1,21 @@
-from imports import *
-from Sources.Classes import *
-from Widgets.Dialogs import *
-from Sources.Functions import *
-from init_config import costum_font
+'''
+    @anfreire
 
-class Config(Widget):
+    linktr.ee/anfreire
+'''
+
+from Sources.imports import *
+from Auxiliary.Functions import *
+from Widgets.AddUser import AddUser
+from Auxiliary.Classes import Events
+from Sources.init_config import get_font
+from Widgets.CodeVerify import CodeVerify
+
+'''
+    This mehod contains the configuration page.
+'''
+
+class Config(Events):
     '''
     This class contains the methods that are used in the configuration page.
     Connects the signals and slots of the configuration page for the setup and for the recovery.
@@ -12,8 +23,7 @@ class Config(Widget):
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
         '''
-        This method initializes the configuration page widgets.
-        This method should only be called once, that is, when the application is started.
+        This method initializes the parent class and starts the widgets.
         '''
         self.start_widgets_config()
 
@@ -23,23 +33,24 @@ class Config(Widget):
         It should only be called once, as it is called in the __init__ method.
         '''
         self.header = QListWidgetItem("Users")
-        self.header.setFont(costum_font)
+        font_list = copy.copy(get_font())
+        font_list.setPointSize(30)
+        self.header.font().setBold(True)
+        self.header.setFont(font_list)
         self.header.setTextAlignment(Qt.AlignCenter)
         self.ui.listWidget.addItem(self.header)
-        self.ui.email_input_config.setToolTip("This is your email to recover your password.")
-        self.ui.email_input_config.setPlaceholderText("Email to recover the acess")
+        self.ui.input_email_config.setToolTip("This is your email to recover your password.")
+        self.ui.input_email_config.setPlaceholderText("Email to recover the acess")
+        self.ui.input_email_config.returnPressed.connect(self.ui.button_proceed_config.click)
 
     def setup_config(self) -> None:
         '''
         This method setups the configuration page signals, layout and slots for the setup and for the recovery.
         The setup will depend on the flags.create_db and flags.recover.
         '''
-        disconnect_button(self.ui.browse_db_file_button) 
-        self.ui.browse_db_file_button.clicked.connect(lambda:self.browse_db_file())
-        disconnect_button(self.ui.proceed_button_config)
-        self.ui.proceed_button_config.clicked.connect(lambda:self.proceed_event_1())
-        disconnect_button(self.ui.add_user_button)
-        self.ui.add_user_button.clicked.connect(lambda:self.update_user_lists())
+        disconnect_button(self.ui.button_browse_config).connect(lambda:self.browse_db_file())
+        disconnect_button(self.ui.button_proceed_config).connect(lambda:self.proceed_event_1())
+        disconnect_button(self.ui.button_add_config).connect(lambda:self.update_user_lists())
         self.setup_config_layout()
         if self.flags.recover == False:
             self.setup_config_register()
@@ -54,58 +65,55 @@ class Config(Widget):
         Depends on the flags.create_db and flags.recover .
         '''
         if self.flags.create_db == False and self.flags.recover == False:
-            if self.ui.horizontalLayout_4.indexOf(self.ui.verticalLayout_6) == -1:
-                self.ui.horizontalLayout_4.addItem(self.ui.verticalLayout_6)
-                self.ui.verticalLayout_6.setContentsMargins(50, -1, -1, -1)
-            if self.ui.verticalLayout_6.indexOf(self.ui.password_label_2) == -1:
-                self.ui.verticalLayout_6.addWidget(self.ui.password_label_2, 0, Qt.AlignHCenter|Qt.AlignBottom)
-                self.ui.password_label_2.show()
-            if self.ui.verticalLayout_6.indexOf(self.ui.browse_db_file_button) == -1:
-                self.ui.verticalLayout_6.addWidget(self.ui.browse_db_file_button, 0, Qt.AlignmentFlag.AlignHCenter|Qt.AlignmentFlag.AlignTop)
-                self.ui.browse_db_file_button.show()
+            if self.ui.horizontalLayout_2.indexOf(self.ui.verticalLayout) == -1:
+                self.ui.horizontalLayout_2.addItem(self.ui.verticalLayout)
+            if self.ui.verticalLayout.indexOf(self.ui.label_10) == -1:
+                self.ui.verticalLayout.addWidget(self.ui.label_10, 0, Qt.AlignHCenter|Qt.AlignBottom)
+                self.ui.label_10.show()
+            if self.ui.verticalLayout.indexOf(self.ui.button_browse_config) == -1:
+                self.ui.verticalLayout.addWidget(self.ui.button_browse_config, 0, Qt.AlignmentFlag.AlignHCenter|Qt.AlignmentFlag.AlignTop)
+                self.ui.button_browse_config.show()
         elif self.flags.create_db == True or self.flags.recover == True:
-            if self.ui.verticalLayout_6.indexOf(self.ui.password_label_2) != -1:
-                self.ui.verticalLayout_6.removeWidget(self.ui.password_label_2)
-                self.ui.password_label_2.hide()
-            if self.ui.verticalLayout_6.indexOf(self.ui.browse_db_file_button) != -1:
-                self.ui.verticalLayout_6.removeWidget(self.ui.browse_db_file_button)
-            if self.ui.horizontalLayout_4.indexOf(self.ui.verticalLayout_6) != -1:
-                self.ui.horizontalLayout_4.removeItem(self.ui.verticalLayout_6)
-                self.ui.browse_db_file_button.hide()
+            if self.ui.verticalLayout.indexOf(self.ui.label_10) != -1:
+                self.ui.verticalLayout.removeWidget(self.ui.label_10)
+                self.ui.label_10.hide()
+            if self.ui.verticalLayout.indexOf(self.ui.button_browse_config) != -1:
+                self.ui.verticalLayout.removeWidget(self.ui.button_browse_config)
+                self.ui.button_browse_config.hide()
+            if self.ui.horizontalLayout_2.indexOf(self.ui.verticalLayout) != -1:
+                self.ui.horizontalLayout_2.removeItem(self.ui.verticalLayout)
 
     def setup_config_register(self) -> None:
         '''
         This method setups the configuration page signals and slots, when the user is registering.
-        Its called by setup_config(), when the flag.recover is False.
-        Sets the close event to the middle of the configuration process, that deletes the data with the user's logging information.
+        Its called by setup_config(), when the flag.recover is False and flag.create_db is False.
+        Sets the close event to the middle of the configuration process, that deletes the data with the user's logging information, more information in the method set_middle_config_close_event().
         '''
         self.set_middle_config_close_event()
-        disconnect_button(self.ui.return_button_config)
-        self.ui.return_button_config.clicked.connect(lambda:self.return_start_from_config())
+        disconnect_button(self.ui.button_return_config).connect(lambda:self.return_start_from_config())
         
     def setup_config_recover(self) -> None:
         '''
         This method setups the configuration page signals and slots, when the user is recovering.
         Its called by setup_config(), when the flag.recover is True.
-        Removes the old logging data, to save the new one.
+        Decrypts the database file, if the user chose to encrypt it, because the code to encrypt will change.
+        Resets old logging information and sets the flags flags.email_added and flags.users_added to False for the recovery.
         '''
-        self.delete_data()
-        self.set_middle_recovery_close_event()
-        self.ui.return_button_config.clicked.connect(lambda:self.show_warning())
-        
-    def show_warning(self) -> None:
-        '''
-        This method shows a warning message, when the user tries to return to in the middle of the recovery process.
-        '''
-        dialog = QMessageBox()
-        dialog.setFont(costum_font)
-        dialog.warning(self, "Warning", "There is no logging data and you need to end the recovery process. If you close the window, you will lose the data.", QMessageBox.Ok)
+        try:
+            if self.data.config == 'T':
+                decrypt_database(self.data)
+        except:
+            pass
+        self.flags.email_added = False
+        self.flags.users_added = False
+        self.data.reset()
+        disconnect_button(self.ui.button_return_config).connect(lambda:self.return_confirm_email_from_config())
         
     def empty_config(self) -> None:
         '''
         This method empties the configuration page widgets.
         '''
-        self.ui.email_input_config.setText('')
+        self.ui.input_email_config.setText('')
         while self.ui.listWidget.count() > 1:
             self.ui.listWidget.takeItem(1)
             
@@ -113,7 +121,8 @@ class Config(Widget):
         '''
         This method sets the configuration page as the current page.
         '''
-        self.ui.stackedWidget.setCurrentWidget(self.ui.config)
+        self.ui.stackedWidget.setCurrentWidget(self.ui.Config)
+        self.turn_off_actions_menu()
 
     def return_start_from_config(self) -> None:
         '''
@@ -121,6 +130,15 @@ class Config(Widget):
         It is used when the user clicks on the return button, when the user is registering.
         '''
         self.go_start()
+        
+    def return_confirm_email_from_config(self) -> None:
+        '''
+        This method returns to the confirm email page from the configuration page.
+        It is used when the user clicks on the return button, when the user is recovering.
+        Empties the configuration page widgets, because an email confirmation will be sent again, to start the recovery process.
+        '''
+        self.empty_config()
+        self.go_confirm_email()
 
     def browse_db_file(self) -> None:
         '''
@@ -141,35 +159,33 @@ class Config(Widget):
                 self.flags.db_file_added = True
                 return
             else:
-                dialog = QMessageBox()
-                dialog.setFont(costum_font)
-                dialog.critical(None, "Error!", "Not a database file! (.db)", QMessageBox.Ok)
+                show_dialog(self, "error", "Not a database file! (.db)", get_font())
         else:
-            dialog = QMessageBox()
-            dialog.setFont(costum_font)
-            dialog.critical(None, "Error!", "No file has been setected!", QMessageBox.Ok)
-    
-    def delete_data(self) -> None:
+            show_dialog(self, "error", "No file has been setected!", get_font())
+        
+    def replace_data(self, new_users, new_passwrds, new_code, new_email) -> None:
         '''
-        This method is called when the user is recovering the acess to the database.
-        If the user previously selected to encrypt the database, it decrypts the database, because the key will be changed.
-        This method deletes the log.db file, to replace it with the new one.
-        Sets the default configuration, and the default flags.
-        Sets the information to encrypt the database, if the user selected to encrypt it, or not, if the user selected not to encrypt it.
+        This function is used to update the logging information in the recovery process.
         '''
-        if self.data.config == 'T':
-            self.flags.encrypt_db = True
-            decrypt_database(self.ui.stackedWidget)
-        self.data.reset()
-        file_path = os.path.join('.bin', 'log.db')
-        if os.path.exists(file_path):
-            os.remove(file_path)
-        if self.flags.encrypt_db == True:
-            self.data.config = 'T'
-        else:
-            self.data.config = 'F'
-        self.flags.email_added = False
-        self.flags.users_added = False
+        self.data.update_values(retrieve_from_db())
+        conn = sqlite3.connect('.bin/log.db')
+        with conn:
+            c = conn.cursor()
+            c.execute("SELECT users, passwrds, code, email, config, key FROM data")
+            result = c.fetchone()
+            code = result[2]
+            email = result[3]
+            config = result[4]
+            key = result[5]
+        encrypted_users = encrypt(str(new_users).encode(), key)
+        encrypted_passwrds = encrypt(str(new_passwrds).encode(), key)
+        encrypted_code = encrypt(str(new_code).encode(), key)
+        encrypted_email = encrypt(str(new_email).encode(), key)
+        conn = sqlite3.connect('.bin/log.db')
+        with conn:
+            c = conn.cursor()
+            c.execute("UPDATE data SET users = ?, passwrds = ?, code = ?, email = ?", (encrypted_users, encrypted_passwrds, encrypted_code, encrypted_email))
+            conn.commit()
 
     def update_user_lists(self) -> None:
         '''
@@ -182,7 +198,7 @@ class Config(Widget):
             if self.ui.listWidget.findItems(user, Qt.MatchExactly):
                 continue
             user = QListWidgetItem(user)
-            user.setFont(costum_font)
+            user.setFont(get_font())
             user.setTextAlignment(Qt.AlignCenter)
             self.ui.listWidget.addItem(user)
 
@@ -193,22 +209,16 @@ class Config(Widget):
         If the user meets all the requirements, proceeds to the method email_change_handler().
         '''
         if self.flags.users_added == False:
-            dialog = QMessageBox()
-            dialog.setFont(costum_font)
-            dialog.critical(None, "Error!", "No users added!", QMessageBox.Ok)
+            show_dialog(self, "error", "No users added!", get_font())
             return
         elif self.flags.db_file_added == False and self.flags.create_db == False and self.flags.recover == False:
-            dialog = QMessageBox()
-            dialog.setFont(costum_font)
-            dialog.critical(None, "Error!", "No database file added!", QMessageBox.Ok)
+            show_dialog(self, "error", "No database file added!", get_font())
             return
-        elif is_email_valid(self.ui.email_input_config.text()) == True:
-            self.data.email = self.ui.email_input_config.text()
+        elif is_email_valid(self.ui.input_email_config.text()) == True:
+            self.data.email = self.ui.input_email_config.text()
             self.flags.email_added = True
         else:
-            dialog = QMessageBox()
-            dialog.setFont(costum_font)
-            dialog.critical(None, "Error!", "Invalid email!", QMessageBox.Ok)
+            show_dialog(self, "error", "Invalid email!", get_font())
             return
         if self.flags.email_added == True and self.flags.users_added == True and \
             ((self.flags.db_file_added == True and self.flags.create_db == False and self.flags.recover == False) or \
@@ -223,9 +233,12 @@ class Config(Widget):
         Sends the email to the user, with the code, and proceeds to the method proceed_event_2().
         '''
         self.data.generate_code()
-        send_email(self.data, "insert_email_here", "inset_password_here")
-        disconnect_button(self.ui.proceed_button_config)
-        self.ui.proceed_button_config.clicked.connect(lambda:self.proceed_event_2())  
+        try:
+            send_email(self.data, "YOUR_EMAIL_HERE", "YOUR_PASSWORD_HERE")
+        except Exception as e:
+            show_dialog(self, "error", f"An error has occurred while sending the email!\nPlease try again later.\nInfo: {e}", get_font())
+            return
+        disconnect_button(self.ui.button_proceed_config).connect(lambda:self.proceed_event_2())  
         self.proceed_event_2()
             
     def proceed_event_2(self) -> None:
@@ -234,11 +247,12 @@ class Config(Widget):
         If the code is verified, it saves the data to the database and executes the method configuration_done_events().
         If the email has changed, it disconnects the proceed button and connects it back to the method proceed_event_1().
         '''
-        if self.data.email != self.ui.email_input_config.text():
-            disconnect_button(self.ui.proceed_button_config)
-            self.ui.proceed_button_config.clicked.connect(lambda:self.proceed_event_1())
+        if self.data.email != self.ui.input_email_config.text():
+            disconnect_button(self.ui.button_proceed_config).connect(lambda:self.proceed_event_1())
         tmp_code = CodeVerify(self.data.code, False)
         tmp_verification = tmp_code.get_flag()
+        if self.flags.recover == True:
+            self.replace_data(self.data.users, self.data.passwrds, self.data.code, self.data.email)
         if tmp_verification == True:
             save_to_db(self.data)
             self.configuration_done_events()
@@ -246,7 +260,7 @@ class Config(Widget):
     def configuration_done_events(self) -> None:
         '''
         This method is called when the code is verified.
-        If the user is selected to encrypt the database, it encrypts the database.
+        If the user selected to encrypt the database, it encrypts the database.
         Clears all widgets from all previous windows, and sets the default close event.
         Proceeds to the next window, the login window.
         '''
@@ -254,10 +268,9 @@ class Config(Widget):
         if self.data.config == 'T':
             encrypt_database(self.data)
         if self.flags.recover == True:
+            
             self.flags.recover = False
-        dialog = QMessageBox()
-        dialog.setFont(costum_font)
-        dialog.information(None, "Welcome!", "Welcome to the DataBase!\nPlease, remember your password and email to recover your DataBase in the future.", QMessageBox.Ok)
+        show_dialog(self, "info", "Welcome to the DataBase!\nPlease, remember your password and email to recover your DataBase in the future.", get_font())
         self.empty_start()
         self.empty_config()
         self.empty_login()

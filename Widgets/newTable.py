@@ -1,6 +1,19 @@
-from imports import *
-from Widgets.Dialogs import *
-from init_config import costum_font
+'''
+    @anfreire
+
+    linktr.ee/anfreire
+'''
+
+from Sources.imports import *
+from Auxiliary.Functions import *
+from Widgets.RowDialog import RowDialog
+from Sources.init_config import get_font
+from Widgets.ShortcutDialog import ShortcutDialog
+
+'''
+    This module contains the code for the new table widget.
+    It will be used in the newTab widget.
+'''
 
 class newTable(QtWidgets.QTableWidget):
     '''
@@ -12,6 +25,7 @@ class newTable(QtWidgets.QTableWidget):
         '''
         This method initializes the table with the data received as argument.
         '''
+        self.parent = parent
         self.setup_vars(widgets, data)
         self.setup_table()
         self.connect_signals()
@@ -21,8 +35,47 @@ class newTable(QtWidgets.QTableWidget):
         self.get_unique_columns()
         self.horizontalHeader().setSizeAdjustPolicy(QAbstractScrollArea.SizeAdjustPolicy.AdjustToContents)
         self.horizontalHeader().setStretchLastSection(True)
+        list_widgets = self.get_header_items()
+        list_widgets.append(self.horizontalHeader())
+        list_widgets.append(self.verticalHeader())
+        self.widgets_table = get_initial_fonts_widgets(list_widgets)
+        self.parent.tabWidgets.append(self.widgets_table)
+        self.parent.resize_event_functions.append(self.resizeEvent_Table)
+        
+    def resizeEvent_Table(self, event: QResizeEvent) -> None:
+        '''
+        This function is called when the new tab widget is resized to resize the widgets.
+        '''
+        for widget in self.widgets_table.values():
+            try:
+                point_per_width = self.parent.initial_width / widget["initial_font"].pointSizeF()
+                new_font = widget['widget'].font()
+                new_font_size = (self.parent.width() / point_per_width)
+                if int(new_font_size) > int(widget["initial_font"].pointSizeF()):
+                    new_font_size = new_font_size * euler_function(new_font_size - widget["initial_font"].pointSizeF())
+                new_font.setPointSizeF(new_font_size)
+                widget['widget'].setFont(new_font)
+            except:
+                continue
+        self.resizeColumnsToContents()
+        self.resizeRowsToContents()
+        self.horizontalHeader().setStretchLastSection(True)
 
-    def get_unique_columns(self):
+    def get_header_items(self) -> list:
+        header_items = []
+        
+        for i in range(self.columnCount()):
+            header_items.append(self.horizontalHeaderItem(i))
+            
+        for i in range(self.rowCount()):
+            header_items.append(self.verticalHeaderItem(i))
+            
+        return header_items
+
+    def get_unique_columns(self) -> None:
+        '''
+        This method gets the unique columns.
+        '''
         conn = sqlite3.connect(".bin/src.db")
         with conn:
             c = conn.cursor()
@@ -52,7 +105,7 @@ class newTable(QtWidgets.QTableWidget):
         '''
         This method connects the signals and slots.
         '''
-        self.add_button.clicked.connect(lambda:FieldDialog(parent=self).add_row_signal())
+        self.add_button.clicked.connect(lambda:RowDialog(parent=self).add_row_signal())
         self.search_button.clicked.connect(lambda:self.search())
 
     def add_actions(self) -> None:
@@ -68,38 +121,79 @@ class newTable(QtWidgets.QTableWidget):
         self.addAction(self.edit_row)
         self.edit_row.triggered.connect(self.edit_row_function)
         self.increase_font_size = QAction("Increase Font Size", self)
-        self.increase_font_size.setShortcut(QtGui.QKeySequence.ZoomIn)
         self.increase_font_size.triggered.connect(self.increase_font_size_func)
+        self.increase_font_size.setShortcutVisibleInContextMenu(False)
         self.addAction(self.increase_font_size)
         self.decrease_font_size = QAction("Decrease Font Size", self)
-        self.decrease_font_size.setShortcut(QtGui.QKeySequence.ZoomOut)
         self.decrease_font_size.triggered.connect(self.decrease_font_size_func)
+        self.decrease_font_size.setShortcutVisibleInContextMenu(False)
         self.addAction(self.decrease_font_size)
+        self.update_shortcuts()
+        action = self.parentWidget().ui.menuSettings.actions()[3]
+        action.triggered.disconnect()
+        action.triggered.connect(lambda:self.change_shortcuts())
 
+    def change_shortcuts(self):
+        '''
+        This method opens a dialog to set the shortcuts of the table.
+        '''
+        dialog = ShortcutDialog(self)
+        dialog.setModal(True)
+        dialog.setFont(get_font())
+        dialog.exec_()
+        if dialog.result() == 1:
+            parent = self.parentWidget().parent.ui.tabWidget
+            for i in range(parent.count()):
+                table = parent.widget(i).findChild(newTable)
+                table.update_shortcuts()
+
+    def update_shortcuts(self):
+        config = configparser.ConfigParser()
+        config.read('config.ini')
+        key_1 = config['DEFAULT']['Shortcut +']
+        key_2 = config['DEFAULT']['Shortcut -']
+        self.increase_font_size.setShortcut(QtGui.QKeySequence(key_1))
+        self.decrease_font_size.setShortcut(QtGui.QKeySequence(key_2))
+    
     def increase_font_size_func(self) -> None:
         '''
         This method increases the font size.
         It is called when the user presses the shortcut key. (CTRL + +)
+        Resizes the columns and rows to fit the contents.
+        Resizes the header to fit the contents.
+        Sets the font size to the header.
         '''
         font = self.font()
         font.setPointSize(font.pointSize() + 1)
         self.setFont(font)
+        self.horizontalHeader().setFont(font)
+        self.resizeColumnsToContents()
+        self.resizeRowsToContents()
+        for header_item in enumerate(self.column_names):
+            self.horizontalHeaderItem(header_item[0]).setFont(font)
 
     def decrease_font_size_func(self) -> None:
         '''
         This method decreases the font size.
         It is called when the user presses the shortcut key. (CTRL + -)
+        Resizes the columns and rows to fit the contents.
+        Resizes the header to fit the contents.
+        Sets the font size to the header.
         '''
         font = self.font()
         font.setPointSize(font.pointSize() - 1)
         self.setFont(font)
+        self.resizeColumnsToContents()
+        self.resizeRowsToContents()
+        for header_item in enumerate(self.column_names):
+            self.horizontalHeaderItem(header_item[0]).setFont(font)
 
     def edit_row_function(self) -> None:
         '''
         This method edits adds row, from the right click menu.
         Opens the FieldDialog class.
         '''
-        FieldDialog(self).edit_row_signal()
+        RowDialog(self).edit_row_signal()
 
     def get_row_id_in_db(self) -> None:
         '''
@@ -131,8 +225,11 @@ class newTable(QtWidgets.QTableWidget):
         values_tmp = []
         for i in range(self.columnCount()):
             values_tmp.append(self.item(self.currentRow(), i).text())
-        restart_question_2 = QMessageBox.question(self, 'WARNING', f"The row containing this values: {str(values_tmp)} will be deleted, do you want to proceed?", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-        if restart_question_2 == QMessageBox.Yes:
+        restart_question_2 = show_question(self,  "warning", f"The row containing this values: {str(values_tmp)} will be deleted, do you want to proceed?", get_font())
+        if restart_question_2 == True:
+            if self.rowCount() == 1:
+                show_dialog(self, "error", "If you want to delete the table, please delete it in the Data Base Editor. If you want to delete the row, please add a new row first.", get_font())
+                return
             with conn:
                 cursor = conn.cursor()
                 selected_row = self.currentRow()
@@ -164,16 +261,24 @@ class newTable(QtWidgets.QTableWidget):
             self.setColumnCount(len(self.sheet_data[0]))
             self.setHorizontalHeaderLabels(self.sheet_name)
             self.combo_box.addItem("All")
+            table_font = copy.copy(get_font())
+            self.setFont(table_font)
             for i, row in enumerate(self.sheet_data):
                 for j, item in enumerate(row):
+                    header_font = copy.copy(get_font())
+                    header_font.setBold(True)
+                    header_font.setPointSize(header_font.pointSize() + 2)
                     self.setItem(i, j, QTableWidgetItem(str(item)))
                     if i == 0:
                         self.setHorizontalHeaderItem(j, QTableWidgetItem(self.column_names[j]))
+                        self.horizontalHeaderItem(j).setFont(header_font)
                         self.combo_box.addItem(self.column_names[j])
+                    if j == 0:
+                        self.setVerticalHeaderItem(i, QTableWidgetItem(str(i + 1)))
+                        self.verticalHeaderItem(i).setFont(header_font)
+                        
         except Exception as e:
-            dialog = QMessageBox()
-            dialog.setFont(costum_font)
-            dialog.critical(self, "Error", f"Error: {self.sheet_name}\n{e}")
+            show_dialog(self, "error", f"Error: {self.sheet_name}", get_font())
         self.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.resizeColumnsToContents()
@@ -242,9 +347,7 @@ class newTable(QtWidgets.QTableWidget):
                         QtCore.QItemSelectionModel.SelectCurrent)
                     self.setSelectionBehavior(QAbstractItemView.SelectRows)
                     return
-        dialog = QMessageBox()
-        dialog.setFont(costum_font)
-        dialog.information(self, "Search", f"Could not find {self.search_input.text()} in {self.sheet_name}", QMessageBox.Ok)
+        show_dialog(self, "info", f"Could not find {self.search_input.text()} in {self.sheet_name}", get_font())
         return
 
     def showContextMenu(self) -> None:

@@ -1,0 +1,141 @@
+﻿Diagnose log at 2023-02-14T02:43:21Z
+
+AppPath: /usr/local/bin/git-credential-manager
+InstallDir: /usr/local/share/gcm-core/
+Version: 2.0.886+ea93cb5158
+
+------------
+Diagnostic: Environment
+Skipped: False
+Success: True
+Exception: None
+Log:
+OSType: Linux
+OSVersion: Linux anfreire-NBLK-WAX9X 5.19.0-31-generic #32-Ubuntu SMP PREEMPT_DYNAMIC Fri Jan 20 15:20:08 UTC 2023 x86_64 x86_64 x86_64 GNU/Linux
+Reading environment variables... OK
+ Variables:
+PWD=/home/anfreire/Desktop/New Folder/Data_Base_Manager
+PAGER=less
+LSCOLORS=Gxfxcxdxbxegedabagacad
+XMODIFIERS=@im=ibus
+XDG_SESSION_TYPE=wayland
+LC_MEASUREMENT=pt_PT.UTF-8
+LC_NAME=pt_PT.UTF-8
+ZSH=/home/anfreire/.oh-my-zsh
+_P9K_TTY=/dev/pts/0
+LC_TIME=pt_PT.UTF-8
+QT_IM_MODULE=ibus
+LANG=en_US.UTF-8
+LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:
+VTE_VERSION=7000
+DBUS_STARTER_BUS_TYPE=session
+DESKTOP_SESSION=ubuntu
+SHLVL=1
+LOGNAME=anfreire
+SHELL=/usr/bin/zsh
+GIT_EXEC_PATH=/usr/lib/git-core
+DISPLAY=:0
+P9K_TTY=old
+GNOME_TERMINAL_SERVICE=:1.248
+XDG_RUNTIME_DIR=/run/user/1000
+XAUTHORITY=/run/user/1000/.mutter-Xwaylandauth.W344Z1
+P9K_SSH=0
+SSH_AGENT_LAUNCHER=openssh
+HOME=/home/anfreire
+COLORTERM=truecolor
+QT_ACCESSIBILITY=1
+GTK_MODULES=gail:atk-bridge
+LC_MONETARY=pt_PT.UTF-8
+GDMSESSION=ubuntu
+XDG_MENU_PREFIX=gnome-
+SYSTEMD_EXEC_PID=1698
+XDG_CURRENT_DESKTOP=ubuntu:GNOME
+LC_TELEPHONE=pt_PT.UTF-8
+LESS=-R
+LC_PAPER=pt_PT.UTF-8
+WAYLAND_DISPLAY=wayland-0
+USER=anfreire
+LC_NUMERIC=pt_PT.UTF-8
+GNOME_TERMINAL_SCREEN=/org/gnome/Terminal/screen/3c7db7f7_a5eb_4aa8_85cd_7025e2887133
+LC_IDENTIFICATION=pt_PT.UTF-8
+XDG_SESSION_DESKTOP=ubuntu
+XDG_SESSION_CLASS=user
+XDG_DATA_DIRS=/home/anfreire/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share/:/usr/share/
+GNOME_SHELL_SESSION_MODE=ubuntu
+SESSION_MANAGER=local/anfreire-NBLK-WAX9X:@/tmp/.ICE-unix/1698,unix/anfreire-NBLK-WAX9X:/tmp/.ICE-unix/1698
+LC_ADDRESS=pt_PT.UTF-8
+TERM=xterm-256color
+GNOME_DESKTOP_SESSION_ID=this-is-deprecated
+GNOME_SETUP_DISPLAY=:1
+USERNAME=anfreire
+DBUS_STARTER_ADDRESS=unix:path=/run/user/1000/bus,guid=8488548718150ccd96235e6463eae8ff
+_=/usr/bin/git
+OLDPWD=/home/anfreire/Desktop/New Folder
+_P9K_SSH_TTY=/dev/pts/0
+PATH=/usr/lib/git-core:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus,guid=8488548718150ccd96235e6463eae8ff
+SSH_AUTH_SOCK=/run/user/1000/keyring/ssh
+
+
+------------
+Diagnostic: File system
+Skipped: False
+Success: True
+Exception: None
+Log:
+Temporary directory is '/tmp/'...
+Checking basic file I/O...
+Writing to temporary file '/tmp/e14e4916bdb71a9b527399ff'... OK
+Reading from temporary file '/tmp/e14e4916bdb71a9b527399ff'... OK
+Deleting temporary file '/tmp/e14e4916bdb71a9b527399ff'... OK
+Testing IFileSystem instance...
+UserHomePath: /home/anfreire
+UserDataDirectoryPath: /home/anfreire/.gcm
+GetCurrentDirectory(): /home/anfreire/Desktop/New Folder/Data_Base_Manager
+
+------------
+Diagnostic: Networking
+Skipped: False
+Success: True
+Exception: None
+Log:
+Checking networking and HTTP stack...
+Creating HTTP client... OK
+IsNetworkAvailable: True
+Sending HEAD request to http://example.com... OK
+Sending HEAD request to https://example.com... OK
+Acquiring free TCP port... OK
+Testing local HTTP loopback connections...
+Creating new HTTP listener for http://localhost:37187/... OK
+Waiting for loopback connection... OK
+Writing response... OK
+Waiting for response data... OK
+Loopback connection data OK
+
+------------
+Diagnostic: Git
+Skipped: False
+Success: True
+Exception: None
+Log:
+Getting Git version... OK
+Git version is '2.37.2'
+Locating current repository... OK
+Git repository at '/home/anfreire/Desktop/New Folder/Data_Base_Manager/.git'
+Listing all Git configuration... OK
+Git configuration:
+file:/home/anfreire/.gitconfig	user.email=anfreire.dev@gmail.com
+file:/home/anfreire/.gitconfig	credential.helper=
+file:/home/anfreire/.gitconfig	credential.helper=/usr/local/bin/git-credential-manager
+file:/home/anfreire/.gitconfig	credential.credentialstore=secretservice
+file:/home/anfreire/.gitconfig	credential.https://dev.azure.com.usehttppath=true
+file:.git/config	core.repositoryformatversion=0
+file:.git/config	core.filemode=true
+file:.git/config	core.bare=false
+file:.git/config	core.logallrefupdates=true
+file:.git/config	remote.origin.url=https://github.com/anfreire/Data_Base_Manager
+file:.git/config	remote.origin.fetch=+refs/heads/*:refs/remotes/origin/*
+file:.git/config	branch.0.1.remote=origin
+file:.git/config	branch.0.1.merge=refs/heads/0.1
+
+
